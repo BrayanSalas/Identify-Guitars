@@ -8,8 +8,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Por ejemplo: python identify_guitars.py image.jpg
 # El argumento de ruta sería image.jpg
 ruta = sys.argv[1]
-abrirImagen = Image.open(ruta)
-abrirImagen.show()
+
+#Abre la imagen, en caso de que no se encuentre, manda el tipo de error y dice el error al usuario.
+try:
+    abrirImagen = Image.open(ruta)
+    abrirImagen.show()    
+except OSError as err:
+    print("OS error: {0}".format(err))
+    print("NO SE ENCUENTRA EL ARCHIVO SOLICITADO")
 
 # Se lee la imagen dicha anteriormente con la ejecución del código
 image_data = tf.gfile.FastGFile(ruta, 'rb').read()
