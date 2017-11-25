@@ -1,11 +1,14 @@
 import os, sys
-
+from PIL import Image
 import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # change this as you see fit
 image_path = sys.argv[1]
+ruta = sys.argv[1]
+abrirImagen = Image.open(''+ruta)
+abrirImagen.show()
 
 # Read in the image_data
 image_data = tf.gfile.FastGFile(image_path, 'rb').read()
@@ -30,7 +33,27 @@ with tf.Session() as sess:
     # Sort to show labels of first prediction in order of confidence
     top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
     
+    # Codigo para imprimir el resultado de la predición con su puntuación
+    i = 0
+    auxPuntuacion = 0
+    nombre = []
+    puntuacion = []
+    #Almacena el nombre de la carpeta en human_string y la puntuacion obtenida en score, luego estas son almacenadas en arreglos
+    #para su comparacion
     for node_id in top_k:
         human_string = label_lines[node_id]
         score = predictions[0][node_id]
-        print('%s (score = %.5f)' % (human_string, score))
+        nombre.append(human_string)
+        puntuacion.append(score)
+        i = i + 1
+    #Comparacion de puntuaciones segun la predicción
+    for i in range(0, 4):
+        if(puntuacion[i] > auxPuntuacion):
+            auxPuntuacion = puntuacion[i]
+            auxNombre = nombre[i]
+    #Imprime la marca 
+    print("La guitarra es de marca: "+auxNombre.capitalize())
+    mostrar = input("Desea mostrar los porcentajes de las demas marcas? y/n")
+    if(mostrar == "y"):
+        for i in range(0,4):
+            print('%s (Puntuacion = %.5f)' % (nombre[i].capitalize(), puntuacion[i]))
