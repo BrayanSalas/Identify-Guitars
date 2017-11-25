@@ -4,33 +4,36 @@ import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-# change this as you see fit
-image_path = sys.argv[1]
+# Obtiene el valor ingresado por el usuario despues de la ejecución
+# Por ejemplo: python identify_guitars.py image.jpg
+# El argumento de ruta sería image.jpg
 ruta = sys.argv[1]
 abrirImagen = Image.open(''+ruta)
 abrirImagen.show()
 
-# Read in the image_data
-image_data = tf.gfile.FastGFile(image_path, 'rb').read()
+# Se lee la imagen dicha anteriormente con la ejecución del código
+image_data = tf.gfile.FastGFile(ruta, 'rb').read()
 
-# Loads label file, strips off carriage return
+# Se lee el archivo que contiene las carpetas, este archivo se crea cuando se entrena con el machine learning de retrain.py
+# Por ejemplo en este contiene lo que son las marcas de guitarra Jackson Fender Epiphone Schecter
 label_lines = [line.rstrip() for line 
                    in tf.gfile.GFile("retrained_labels.txt")]
 
-# Unpersists graph from file
+# Abriendo el grafico re-entrenado
 with tf.gfile.FastGFile("retrained_graph.pb", 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     tf.import_graph_def(graph_def, name='')
 
+#Se abre una sesion de tensorflow, la neurona principal
 with tf.Session() as sess:
-    # Feed the image_data as input to the graph and get first prediction
+    # Comprueba la imagen dada con los grafico y hace una predicción
     softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
     
     predictions = sess.run(softmax_tensor, \
              {'DecodeJpeg/contents:0': image_data})
     
-    # Sort to show labels of first prediction in order of confidence
+    # Ordena las predicciones en orden de puntuacion
     top_k = predictions[0].argsort()[-len(predictions[0]):][::-1]
     
     # Codigo para imprimir el resultado de la predición con su puntuación
@@ -53,6 +56,8 @@ with tf.Session() as sess:
             auxNombre = nombre[i]
     #Imprime la marca 
     print("La guitarra es de marca: "+auxNombre.capitalize())
+
+    #Si se desea mostrar aun así los demás porcentajes de acierto
     mostrar = input("Desea mostrar los porcentajes de las demas marcas? y/n")
     if(mostrar == "y"):
         for i in range(0,4):
