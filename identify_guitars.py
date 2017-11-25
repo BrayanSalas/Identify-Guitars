@@ -8,7 +8,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # Por ejemplo: python identify_guitars.py image.jpg
 # El argumento de ruta sería image.jpg
 ruta = sys.argv[1]
-abrirImagen = Image.open(''+ruta)
+abrirImagen = Image.open(ruta)
 abrirImagen.show()
 
 # Se lee la imagen dicha anteriormente con la ejecución del código
