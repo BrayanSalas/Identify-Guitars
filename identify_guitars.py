@@ -2,6 +2,7 @@ import os, sys
 from PIL import Image
 import tensorflow as tf
 
+#Declarando el grado de mensajes que mandará la consola, el nivel 2 añade "WARNING" como filtro de los log error.
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # Obtiene el valor ingresado por el usuario despues de la ejecución
@@ -61,7 +62,7 @@ with tf.Session() as sess:
             auxPuntuacion = puntuacion[i]
             auxNombre = nombre[i]
     #Imprime la marca 
-    print("La guitarra es de marca: "+auxNombre.capitalize())
+    print('La guitarra es de marca: %s y su porcentaje de acierto es de: %.5f' % (auxNombre.capitalize(), auxPuntuacion))
 
     #Si se desea mostrar aun así los demás porcentajes de acierto
     mostrar = input("Desea mostrar los porcentajes de las demas marcas? y/n")
